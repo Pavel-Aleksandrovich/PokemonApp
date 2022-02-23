@@ -28,11 +28,11 @@ final class PokemonCell: UITableViewCell {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-//
-//    func configure(note: NoteEntity) {
-//        title.text = note.title
+
+    func configure(note: Pokemon) {
+//        title.text = note.next
 //        image.image = note.noteImage
-//    }
+    }
 }
 
 // MARK: - Configure View
