@@ -29,8 +29,8 @@ final class PokemonCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
 
-    func configure(note: Pokemon) {
-//        title.text = note.next
+    func configure(note: Poke) {
+        title.text = note.name
 //        image.image = note.noteImage
     }
 }

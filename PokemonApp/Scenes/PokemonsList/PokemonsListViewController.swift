@@ -7,11 +7,7 @@
 
 import UIKit
 
-protocol PokemonsListViewController: AnyObject {
-    var addNoteButtonTappedHandler: (() -> ())? { get set }
-}
-
-final class PokemonsListViewControllerImpl: UIViewController, PokemonsListViewController {
+final class PokemonsListViewControllerImpl: UIViewController {
     
     private enum Constants {
         static let cellIdentifier = "cellIdentifier"
@@ -23,15 +19,13 @@ final class PokemonsListViewControllerImpl: UIViewController, PokemonsListViewCo
     private var pokemons: [Poke] = []
     private var offset = 0
     
-    var addNoteButtonTappedHandler: (() -> ())?
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         configureView()
-        getPokemon()
+        getPokemons()
     }
 
-    private func getPokemon() {
+    private func getPokemons() {
         
         NetworkManager.shared.getPokemons(page: offset) { [weak self] (result) in
             guard let self = self else { return }
@@ -45,9 +39,15 @@ final class PokemonsListViewControllerImpl: UIViewController, PokemonsListViewCo
                 }
             case .failure(let error):
                 print(error)
+                self.showErrorAlert(error: error)
             }
-            
         }
+    }
+    
+    private func showErrorAlert(error: ErrorMessage) {
+        let alert = UIAlertController(title: "Error", message: error.rawValue, preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "Ok", style: .default, handler: nil))
+        present(alert,animated: true)
     }
     
     private func configureView() {
@@ -75,8 +75,7 @@ extension PokemonsListViewControllerImpl: UITableViewDelegate, UITableViewDataSo
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: Constants.cellIdentifier, for: indexPath) as! PokemonCell
         
-        cell.textLabel?.text =  pokemons[indexPath.row].name
-//        cell.configure(note: firstArray[indexPath.row])
+        cell.configure(note: pokemons[indexPath.row])
         
         return cell
     }
@@ -90,12 +89,15 @@ extension PokemonsListViewControllerImpl: UITableViewDelegate, UITableViewDataSo
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let vc = PokemonDetails()
+        vc.configure(pokemon: pokemons[indexPath.row])
+        navigationController?.pushViewController(vc, animated: false)
     }
     
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
         if indexPath.section == tableView.numberOfSections - 1 && indexPath.row == tableView.numberOfRows(inSection: indexPath.section) - 1 {
             
-            self.getPokemon()
+            self.getPokemons()
         }
     }
 }
