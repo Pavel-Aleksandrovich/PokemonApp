@@ -10,8 +10,9 @@ import Foundation
 final class NetworkManager {
     
     static let shared = NetworkManager()
+    private let baseUrl = "https://pokeapi.co/api/v2/pokemon?limit=10"
     
-    func getPokemons(page: Int, completed: @escaping(Result<[Poke], ErrorMessage>) -> Void) {
+    func getPokemons(page: Int = 10, completed: @escaping(Result<[Poke], ErrorMessage>) -> Void) {
         
         let endpoint = "https://pokeapi.co/api/v2/pokemon?limit=10" + "&offset=\(page)"
         

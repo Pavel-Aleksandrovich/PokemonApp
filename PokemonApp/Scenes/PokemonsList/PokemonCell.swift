@@ -31,7 +31,6 @@ final class PokemonCell: UITableViewCell {
 
     func configure(note: Poke) {
         title.text = note.name
-//        image.image = note.noteImage
     }
 }
 
